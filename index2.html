@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elolen Designs | Oluwasegun</title>
+    <meta name="title" content="Elolen Designs | By Oluwasegun.">
+    <meta name="description" content="High-fidelity brand identities and visual narratives for those who dare to lead.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://Sbelolen.github.io/Demo/">
+    <meta property="og:title" content="Elolen Designs | Visualizing the Unseen">
+    <meta property="og:description" content="Crafting iconic brand identities and high-fidelity visuals.">
+    <meta property="og:image" content="https://yourwebsite.com/preview-image.jpg">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://yourwebsite.com/">
+    <meta property="twitter:title" content="Elolen Designs | Visualizing the Unseen">
+    <meta property="twitter:description" content="High-fidelity brand identities and visual narratives.">
+    <meta property="twitter:image" content="https://yourwebsite.com/preview-image.jpg">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
+
+    <style>
+        :root {
+            --bg: #050505;
+            --primary: #7c3aed;
+            --secondary: #00d2ff;
+            --text: #ffffff;
+            --text-dim: rgba(255, 255, 255, 0.6);
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        html.has-scroll-smooth { overflow: hidden; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+        /* --- PRELOADER --- */
+        .preloader {
+            position: fixed;
+            inset: 0;
+            background: #050505;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loader-content {
+            text-align: center;
+            z-index: 10;
+        }
+
+        .loader-text {
+            font-size: clamp(2rem, 10vw, 5rem);
+            font-weight: 900;
+            letter-spacing: 15px;
+            color: #fff;
+            margin-bottom: 20px;
+            display: flex;
+        }
+
+        .letter {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(20px) rotateX(-90deg);
+        }
+
+        .loader-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            opacity: 0.5;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
+
+        .status-text {
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            font-weight: 700;
+        }
+
+        /* Shutter Exit Animation */
+        .shutter {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: #0a0a0a;
+            z-index: 5;
+        }
+        .shutter.top { top: 0; }
+        .shutter.bottom { bottom: 0; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(1.5); }
+        }
+        /* --- UPDATED HEADER & NAV --- */
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 30px 10%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 2000;
+            transition: padding 0.4s ease, background 0.4s ease; /* Smooth transition */
+        }
+
+        /* This class will be added by JavaScript on scroll */
+        .nav-scrolled {
+            padding: 15px 10%; /* Shrinks the navbar slightly for a premium feel */
+            background: rgba(5, 5, 5, 0.6); /* Semi-transparent dark background */
+            backdrop-filter: blur(15px); /* THE BLUR EFFECT */
+            -webkit-backdrop-filter: blur(15px); /* Safari support */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .logo { font-size: 1.5rem; font-weight: 900; letter-spacing: -1px; z-index: 2001; }
+
+        .nav-links-wrapper {
+            position: relative; padding: 6px; background: var(--glass);
+            border: 1px solid var(--glass-border); border-radius: 100px; backdrop-filter: blur(15px);
+        }
+
+        /* Optional: Make the inner pill wrapper cleaner when nav is blurred */
+        .nav-scrolled .nav-links-wrapper {
+            background: transparent;
+            border-color: transparent;
+            backdrop-filter: none;
+        }
+
+        .nav-links { display: flex; list-style: none; position: relative; z-index: 2; }
+        .nav-links li { padding: 10px 22px; }
+        .nav-links a { color: #fff; text-decoration: none; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.5px; opacity: 0.7; transition: 0.3s; }
+        .nav-links a:hover { opacity: 1; }
+
+        /* The Moving Pill */
+        .nav-hover-pill {
+            margin-left: 6px;
+            position: absolute; top: 6px; left: 6px; height: calc(100% - 14px);
+            background: var(--primary); border-radius: 100px; z-index: 1;
+            pointer-events: none; opacity: 0; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+        }
+
+        /* Initial state: slightly down and invisible */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: none; /* We will let GSAP handle the motion */
+        }
+
+        /* --- UPDATED HAMBURGER (MORPHING X) --- */
+        .hamburger {
+            display: none; width: 40px; height: 40px; cursor: pointer;
+            position: relative; z-index: 2001; background: var(--glass);
+            border: 1px solid var(--glass-border); border-radius: 50%;
+            align-items: center; justify-content: center; transition: 0.3s;
+        }
+        .hamburger:hover { background: rgba(255,255,255,0.1); }
+        .ham-inner { width: 18px; height: 14px; position: relative; }
+        .bar {
+            position: absolute; width: 100%; height: 2px; background: #fff;
+            transition: all 0.4s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+        .bar-top { top: 0; }
+        .bar-bottom { bottom: 0; }
+
+        /* Hamburger Active State (The X) */
+        .hamburger.active .bar-top { transform: translateY(6px) rotate(45deg); }
+        .hamburger.active .bar-bottom { transform: translateY(-6px) rotate(-45deg); }
+
+        /* --- MOBILE MENU --- */
+        .mobile-menu {
+            position: fixed; inset: 0; background: #000; z-index: 1500;
+            display: flex; justify-content: center; align-items: center;
+            clip-path: circle(0% at 90% 5%); transition: clip-path 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+        .mobile-menu.active { clip-path: circle(150% at 90% 5%); }
+        .mobile-nav { list-style: none; text-align: center; }
+        .mobile-nav li { margin: 20px 0; overflow: hidden; }
+        .mobile-nav a {
+            font-size: 3rem; color: #fff; text-decoration: none; font-weight: 900;
+            display: block; transform: translateY(100px); transition: 0.5s; opacity: 0;
+        }
+        .mobile-menu.active .mobile-nav a { transform: translateY(0); opacity: 1; }
+
+        /* --- TRUST PRIMER STYLES --- */
+        .trust-primer {
+            padding: 100px 10%;
+            background: linear-gradient(to bottom, #050505, #0a0a0a);
+        }
+
+        .trust-tag {
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .trust-statement {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            line-height: 1.2;
+            max-width: 900px;
+            margin-bottom: 60px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* --- Ticker Animation --- */
+        .ticker-label {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .ticker-wrapper {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+            padding: 20px 0;
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .ticker-track {
+            display: inline-block;
+            animation: ticker 25s linear infinite;
+        }
+
+        .ticker-track span {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-right: 80px;
+            color: rgba(255,255,255,0.1);
+            transition: 0.3s;
+        }
+
+        .ticker-track span:hover {
+            color: rgba(255,255,255,0.8);
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* --- Elolen Designs Hero Style --- */
+        /* --- HERO BASE --- */
+        .hero {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 0 10%;
+            overflow: hidden;
+            background: #050505;
+        }
+
+        /* --- FULL BLEED VIDEO --- */
+        .hero-video-bleed {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .hero-vid {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            filter: brightness(0.5);
+        }
+
+        .hero-overlay-dark {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom,
+                rgba(5,5,5,0.2) 0%,
+                rgba(5,5,5,0.9) 100%);
+            z-index: 2;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+        }
+
+        .studio-tag {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: var(--secondary, #00d2ff);
+            display: block;
+            margin-bottom: 25px;
+        }
+
+        .main-statement {
+            font-size: clamp(3rem, 9vw, 8.5rem);
+            font-weight: 900;
+            line-height: 1.1; /* Balanced for mobile and desktop */
+            letter-spacing: -3px;
+            color: #fff;
+        }
+
+        .reveal-line {
+            display: block;
+            overflow: hidden;
+        }
+
+        .italic-text {
+            font-style: italic;
+            font-family: serif; /* Classic Serif look */
+            background: linear-gradient(45deg, #fff, var(--primary, #7c3aed));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* --- LAYOUT & BUTTONS --- */
+        .hero-bottom-row {
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 40px;
+        }
+
+        .hero-description {
+            max-width: 450px;
+            font-size: 1.15rem;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.6;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .hero-video-bleed{
+            margin-left:-30px;
+            object: cover;
+        }
+
+
+        .hero-overlay-dark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        /* Option A: Solid Tint (Cleaner) */
+        background: rgba(5, 5, 5, 0.7);
+
+        /* Option B: Cinematic Gradient (If you want the edges darker than the center) */
+        /* background: radial-gradient(circle, rgba(5,5,5,0.4) 0%, rgba(5,5,5,0.9) 100%); */
+
+        z-index: 2;
+        }
+
+        /* Liquid Button Style */
+        .btn-main {
+            position: relative;
+            padding: 20px 40px;
+            border: 1px solid #fff;
+            border-radius: 100px;
+            color: #fff;
+            text-decoration: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-fill {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            transition: transform 0.5s cubic-bezier(0.8, 0, 0.2, 1);
+            z-index: -1;
+        }
+
+        .btn-main:hover .btn-fill {
+            transform: translateY(-100%);
+        }
+
+        .btn-main:hover .btn-text {
+            color: #000;
+        }
+
+        .btn-link {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            opacity: 0.8;
+            transition: 0.3s;
+        }
+
+        .btn-link:hover {
+            opacity: 1;
+            transform: translateX(5px);
+        }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 992px) {
+            .hero-bottom-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .main-statement {
+                letter-spacing: -1px;
+            }
+        }
+        /* --- Stats Grid --- */
+        .trust-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-top: 80px;
+        }
+
+        .stat-item {
+            padding: 30px;
+            background: var(--glass);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .stat-num {
+            display: block;
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--secondary);
+        }
+
+        .stat-desc {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .trust-stats { grid-template-columns: 1fr; }
+            .trust-statement { font-size: 2.2rem; }
+        }
+
+        /* --- BENTO GRID STYLES --- */
+        .projects { padding: 150px 10%; }
+        .project-header { margin-bottom: 60px; }
+        .section-title { font-size: 4rem; font-weight: 900; }
+        .section-subtitle { opacity: 0.5; font-size: 1.2rem; }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-auto-rows: 250px;
+            gap: 25px;
+        }
+
+        .project-card {
+            position: relative;
+            border-radius: 30px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+            padding: 35px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        /* Hover Effect: Scale & Border */
+        .project-card:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-10px);
+        }
+
+        /* --- Fix Mobile Cutoff --- */
+        .main-statement {
+            font-size: clamp(2.8rem, 8vw, 8rem); /* Slightly smaller minimum for mobile */
+            font-weight: 900;
+            line-height: 1.1; /* Increased from 0.85 to prevent clipping */
+            letter-spacing: -2px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .main-statement {
+                line-height: 1.2;
+                letter-spacing: -1px;
+            }
+            .hero-bottom-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 30px;
+            }
+        }
+
+        /* --- High-End Button Animations --- */
+        .hero-actions {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .btn-main {
+            position: relative;
+            padding: 18px 35px;
+            border: 1px solid var(--primary);
+            border-radius: 100px;
+            color: #fff;
+            text-decoration: none;
+            overflow: hidden;
+            display: inline-block;
+            z-index: 1;
+        }
+
+        .btn-text {
+            position: relative;
+            z-index: 3;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .btn-fill {
+            position: absolute;
+            top: 100%; /* Start at bottom */
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            transition: transform 0.6s cubic-bezier(0.85, 0, 0.15, 1);
+            z-index: 2;
+        }
+
+        .btn-main:hover .btn-fill {
+            transform: translateY(-100%);
+        }
+
+        .btn-link {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            position: relative;
+            padding: 10px 0;
+        }
+
+        .btn-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            transition: width 0.4s ease;
+        }
+
+        .btn-link:hover::after {
+            width: 100%;
+        }
+
+        /* Card Glow Effect */
+        .project-glow {
+            position: absolute;
+            bottom: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            opacity: 0.2;
+            filter: blur(40px);
+            transition: 0.5s;
+            z-index: 1;
+        }
+
+        .project-card:hover .project-glow {
+            opacity: 0.6;
+            transform: scale(1.5);
+        }
+
+        .project-content { position: relative; z-index: 2; }
+        .tech-tag { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--secondary); margin-bottom: 10px; display: block; }
+        .project-card h3 { font-size: 1.8rem; margin-bottom: 10px; }
+        .project-card p { font-size: 1rem; opacity: 0.6; line-height: 1.4; }
+
+        .project-link { margin-top: 20px; font-weight: 700; color: #fff; opacity: 0; transform: translateY(10px); transition: 0.4s; }
+        .project-card:hover .project-link { opacity: 1; transform: translateY(0); }
+
+        /* Bento Sizing */
+        .featured { grid-column: span 2; grid-row: span 2; }
+        .tall { grid-row: span 2; }
+
+        /* Responsive Bento */
+        @media (max-width: 1100px) {
+            .bento-grid { grid-template-columns: repeat(2, 1fr); }
+            .featured { grid-column: span 2; }
+        }
+
+        @media (max-width: 768px) {
+            .bento-grid { grid-template-columns: 1fr; grid-auto-rows: auto; }
+            .featured, .tall { grid-column: auto; grid-row: auto; }
+            .section-title { font-size: 3rem; }
+        }
+
+        /* --- HERO --- */
+        .hero { height: 100vh; position: relative; display: flex; align-items: center; padding: 0 10%; overflow: hidden; }
+        .hero-bg-wrapper { position: absolute; object:cover; inset: 0; z-index: 1; pointer-events: none; }
+        .spline-bg { width: 100%; height: 120%; position: absolute; object:cover; top: -10%; right: -5%; }
+        .hero-overlay { position: absolute; inset: 0; background: radial-gradient(circle at 30% 50%, rgba(5,5,5,1) 0%, rgba(5,5,5,0.3) 100%); z-index: 2; }
+        .hero-text { z-index: 10; max-width: 800px; }
+        .hero-text h1 { font-size: clamp(3.5rem, 10vw, 7rem); font-weight: 900; line-height: 0.9; margin-bottom: 25px; }
+        .btn-glow { padding: 18px 40px; background: var(--primary); color: #fff; border: none; border-radius: 50px; font-weight: 700; cursor: pointer; box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4); }
+
+        /* --- FOOTER (UNCHANGED) --- */
+        .footer { text-align: center; padding: 80px 10%; border-top: 1px solid var(--glass-border); position: relative; z-index: 10; }
+        .social-links { display: flex; justify-content: center; gap: 30px; margin: 30px 0; }
+        .social-links a { font-size: 2rem; color: var(--text-dim); transition: 0.3s; display: inline-block; }
+
+        /* --- CLIENTS SECTION STYLES --- */
+        .clients { padding: 150px 10%; background: radial-gradient(circle at 80% 20%, rgba(124, 58, 237, 0.05) 0%, transparent 50%); }
+        .client-header { margin-bottom: 80px; }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            align-items: start;
+        }
+
+        .testimonial-card {
+            padding: 40px;
+            border-radius: 30px;
+            position: relative;
+            transition: 0.4s ease;
+        }
+
+        .testimonial-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--primary);
+            transform: scale(1.02);
+        }
+
+        .quote-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .comment {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text);
+            margin-bottom: 30px;
+            font-style: italic;
+            font-weight: 300;
+        }
+
+        .client-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .client-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .client-info h4 { font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
+        .client-info span { font-size: 0.8rem; color: var(--text-dim); }
+
+        /* --- FINAL CTA STYLES --- */
+        .final-cta {
+            padding: 100px 10% 150px 10%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cta-container {
+            width: 100%;
+            max-width: 1000px;
+            perspective: 1000px; /* Required for the 3D tilt */
+        }
+
+        .cta-glass-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(30px);
+            border-radius: 40px;
+            padding: 80px 60px;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            transition: transform 0.1s ease-out; /* Smooth tilt return */
+        }
+
+        .cta-tag {
+            color: var(--secondary);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .cta-title {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 25px;
+        }
+
+        .cta-description {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin: 0 auto 45px auto;
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.1rem;
+            text-decoration: none;
+        }
+
+        /* Floating Orb inside the card */
+        .cta-orb {
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+            filter: blur(80px);
+            opacity: 0.15;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .cta-glass-card { padding: 60px 30px; }
+            .cta-title { font-size: 2.5rem; }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .testimonial-grid { grid-template-columns: 1fr; }
+            .testimonial-card { padding: 30px; }
+        }
+
+        @media (max-width: 992px) {
+            .nav-links-wrapper { display: none; }
+            .hamburger { display: flex; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="preloader">
+        <div class="loader-content">
+            <div class="loader-text" id="loader-name">
+                <span class="letter">E</span>
+                <span class="letter">l</span>
+                <span class="letter">o</span>
+                <span class="letter">l</span>
+                <span class="letter">e</span>
+                <span class="letter">n</span>
+            </div>
+            <div class="loader-status">
+                <div class="status-dot"></div>
+                <span class="status-text">Oluwasegun Eluyemi</span>
+            </div>
+        </div>
+        <div class="shutter top"></div>
+        <div class="shutter bottom"></div>
+    </div>
+
+    <nav class="nav-bar">
+        <div class="logo">Elolen.</div>
+        <div class="nav-links-wrapper">
+            <div class="nav-hover-pill"></div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#projects">Work</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+        <div class="hamburger" id="menu-toggle">
+            <div class="ham-inner">
+                <div class="bar bar-top"></div>
+                <div class="bar bar-bottom"></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobile-menu">
+        <ul class="mobile-nav">
+            <li><a href="#home" style="transition-delay: 0.1s;">Home</a></li>
+            <li><a href="#about" style="transition-delay: 0.2s;">About</a></li>
+            <li><a href="#projects" style="transition-delay: 0.3s;">Work</a></li>
+            <li><a href="#contact" style="transition-delay: 0.4s;">Contact</a></li>
+        </ul>
+    </div>
+
+    <div data-scroll-container>
+        <section class="hero" id="home" data-scroll-section>
+            <div class="hero-video-bleed">
+                <div class="spline-bg hero-vid" data-scroll data-scroll-speed="-3">
+                    <iframe src='https://my.spline.design/orb-S7zwWevc2yLrkDeGffrhTctA/' frameborder='0' width='100%' height='100%'></iframe>
+                </div>
+                <div class="hero-overlay-dark"></div>
+            </div>
+
+            <div class="hero-content">
+                <div class="brand-reveal">
+                    <span class="studio-tag" data-scroll data-scroll-speed="1">Studio Elolen — Visual Excellence</span>
+                    <h1 class="main-statement">
+                        <span class="reveal-line">Visualizing the</span>
+                        <span class="reveal-line italic-text">Unseen.</span>
+                    </h1>
+                </div>
+
+                <div class="hero-bottom-row">
+                    <p class="hero-description">
+                        Crafting iconic brand identities and high-fidelity visuals
+                        that turn silent observers into loyal advocates.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#contact-cta" class="btn-main magnetic-btn">
+                            <span class="btn-text">Start a Project</span>
+                            <div class="btn-fill"></div>
+                        </a>
+                        <a href="#projects" class="btn-link magnetic-btn">
+                            <span class="btn-text">Check Portfolio →</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="trust-primer" id="trust" data-scroll-section>
+            <div class="trust-container">
+                <div class="trust-content" data-scroll data-scroll-speed="1">
+                    <span class="trust-tag">The Philosophy</span>
+                    <h2 class="trust-statement">
+                        Trusted by ambitious teams who value
+                        <span class="gradient-text">clarity</span>,
+                        <span class="gradient-text">quality</span>, and
+                        <span class="gradient-text">long-term brand equity</span>.
+                    </h2>
+                </div>
+
+                <div class="trust-ticker reveal-on-scroll" data-scroll data-scroll-speed="0.5">
+                    <p class="ticker-label">Proven execution for industry leaders</p>
+                    <div class="ticker-wrapper">
+                        <div class="ticker-track">
+                            <span>GOOGLE</span>
+                            <span>STRIPE</span>
+                            <span>NETFLIX</span>
+                            <span>AIRBNB</span>
+                            <span>REVOLUT</span>
+                            <span>VERCEL</span>
+                            <span>GOOGLE</span>
+                            <span>STRIPE</span>
+                            <span>NETFLIX</span>
+                            <span>AIRBNB</span>
+                            <span>REVOLUT</span>
+                            <span>VERCEL</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trust-stats reveal-on-scroll">
+                    <div class="stat-item" data-scroll data-scroll-speed="1.2">
+                        <span class="stat-num">08+</span>
+                        <span class="stat-desc">Years Experience</span>
+                    </div>
+                    <div class="stat-item reveal-on-scroll" data-scroll data-scroll-speed="1.4">
+                        <span class="stat-num">120+</span>
+                        <span class="stat-desc">Projects Shipped</span>
+                    </div>
+                    <div class="stat-item reveal-on-scroll" data-scroll data-scroll-speed="1.6">
+                        <span class="stat-num">24/7</span>
+                        <span class="stat-desc">Studio-Level Execution</span>
+                    </div>
+                </div>
+            </div>
+            </section>
+
+        <section id="about" style="padding: 100px 10%;" data-scroll-section>
+            <h2 style="font-size: 3rem;">Creative Vision</h2>
+            <p style="font-size: 1.5rem; opacity: 0.6; margin-top: 20px;">I turn complex ideas into smooth, high-performance digital realities.</p>
+        </section>
+
+        <section class="projects reveal-on-scroll" id="projects" data-scroll-section>
+            <div class="project-header" data-scroll data-scroll-speed="1">
+                <h2 class="section-title">Selected Works</h2>
+                <p class="section-subtitle">A collection of premium digital experiences.</p>
+            </div>
+
+            <div class="bento-grid">
+                <div class="project-card glass featured reveal-on-scroll" data-scroll data-scroll-speed="1">
+                    <div class="project-content">
+                        <span class="tech-tag">Next.js • GSAP</span>
+                        <h3>Project Alpha</h3>
+                        <p>High-end immersive experience with 3D integration.</p>
+                        <div class="project-link">View Case <i class="ph-bold ph-arrow-up-right"></i></div>
+                    </div>
+                    <div class="project-glow" style="background: radial-gradient(circle, var(--primary) 0%, transparent 70%);"></div>
+                </div>
+
+                <div class="project-card glass reveal-on-scroll" data-scroll data-scroll-speed="1.5">
+                    <div class="project-content">
+                        <span class="tech-tag">React • Spline</span>
+                        <h3>Orbit UI</h3>
+                        <p>3D design system for spatial computing.</p>
+                    </div>
+                    <div class="project-glow" style="background: radial-gradient(circle, #00d2ff 0%, transparent 70%);"></div>
+                </div>
+
+                <div class="project-card glass reveal-on-scroll" data-scroll data-scroll-speed="0.8">
+                    <div class="project-content">
+                        <span class="tech-tag">Web3 • Solidity</span>
+                        <h3>Nexus Protocol</h3>
+                        <p>Secure blockchain dashboard for assets.</p>
+                    </div>
+                    <div class="project-glow" style="background: radial-gradient(circle, #ff00ff 0%, transparent 70%);"></div>
+                </div>
+
+                <div class="project-card glass reveal-on-scroll" data-scroll data-scroll-speed="1.2">
+                    <div class="project-content">
+                        <span class="tech-tag">AI • Python</span>
+                        <h3>Synapse AI</h3>
+                        <p>Neural network visualizer for data.</p>
+                    </div>
+                    <div class="project-glow" style="background: radial-gradient(circle, #facc15 0%, transparent 70%);"></div>
+                </div>
+
+                <div class="project-card glass reveal-on-scroll" data-scroll data-scroll-speed="1.4">
+                    <div class="project-content">
+                        <span class="tech-tag">E-commerce</span>
+                        <h3>Luxe Store</h3>
+                        <p>Modern shopping experience for premium brands.</p>
+                    </div>
+                    <div class="project-glow" style="background: radial-gradient(circle, #10b981 0%, transparent 70%);"></div>
+                </div>
+
+                <div class="project-card glass tall reveal-on-scroll" data-scroll data-scroll-speed="1">
+                    <div class="project-content">
+                        <span class="tech-tag">Node.js • Socket.io</span>
+                        <h3>Pulse Chat</h3>
+                        <p>Real-time collaboration tool for global teams.</p>
+                    </div>
+                    <div class="project-glow" style="background: radial-gradient(circle, #ef4444 0%, transparent 70%);"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="clients" id="clients" data-scroll-section>
+            <div class="client-header reveal-on-scroll" data-scroll data-scroll-speed="1">
+                <h2 class="section-title">Client Voices</h2>
+                <p class="section-subtitle">What world-class partners say about our collaboration.</p>
+            </div>
+
+            <div class="testimonial-grid">
+                <div class="testimonial-card glass reveal-on-scroll" data-scroll data-scroll-speed="1.2">
+                    <div class="quote-icon"><i class="ph-fill ph-quotes"></i></div>
+                    <p class="comment">"The level of 3D integration Milad brought to our landing page was beyond what we imagined. A true creative technologist."</p>
+                    <div class="client-info">
+                        <div class="client-avatar" style="background: linear-gradient(45deg, #7c3aed, #00d2ff);"></div>
+                        <div>
+                            <h4>Sarah Jenkins</h4>
+                            <span>CEO, Veridian Tech</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card glass reveal-on-scroll" data-scroll data-scroll-speed="0.8">
+                    <div class="quote-icon"><i class="ph-fill ph-quotes"></i></div>
+                    <p class="comment">"Smooth performance, pixel-perfect design, and a very organized workflow. Highly recommended for premium projects."</p>
+                    <div class="client-info">
+                        <div class="client-avatar" style="background: linear-gradient(45deg, #facc15, #ef4444);"></div>
+                        <div>
+                            <h4>Marcus Thorne</h4>
+                            <span>Creative Director, Aura</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card glass reveal-on-scroll" data-scroll data-scroll-speed="1.5">
+                    <div class="quote-icon"><i class="ph-fill ph-quotes"></i></div>
+                    <p class="comment">"Working with Oluwasegun was a breeze. He understands the balance between aesthetics and functionality perfectly."</p>
+                    <div class="client-info">
+                        <div class="client-avatar" style="background: linear-gradient(45deg, #10b981, #3b82f6);"></div>
+                        <div>
+                            <h4>Elena Rossi</h4>
+                            <span>Product Manager, Flux</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="final-cta" id="contact-cta" data-scroll-section>
+            <div class="cta-container reveal-on-scroll" data-scroll data-scroll-speed="1">
+                <div class="cta-glass-card">
+                    <div class="cta-content">
+                        <span class="cta-tag">Ready to start?</span>
+                        <h2 class="cta-title">Let’s build the <br><span class="gradient-text">next big thing</span> together.</h2>
+                        <p class="cta-description">
+                            Currently accepting new projects for Q1 2025.
+                            Get in touch to discuss your vision and request availability.
+                        </p>
+
+                        <a href="YOUR_GOOGLE_FORM_URL_HERE" target="_blank" class="btn-glow cta-btn">
+                            Request Availability <i class="ph-bold ph-paper-plane-tilt"></i>
+                        </a>
+                    </div>
+
+                    <div class="cta-orb"></div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer" id="contact" data-scroll-section>
+            <div class="footer-content">
+                <h2>Let's build the future.</h2>
+                <div class="social-links">
+                    <a href="#" class="magnetic"><i class="ph-fill ph-github-logo"></i></a>
+                    <a href="#" class="magnetic"><i class="ph-fill ph-linkedin-logo"></i></a>
+                    <a href="#" class="magnetic"><i class="ph-fill ph-instagram-logo"></i></a>
+                </div>
+                <p>© 2025 Milad. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        window.addEventListener("load", () => {
+            const tl = gsap.timeline({
+                onComplete: () => {
+                    document.querySelector(".preloader").style.display = "none";
+                    // Trigger your Hero animations here
+                    scroller.update();
+                    ScrollTrigger.refresh();
+                }
+            });
+
+            // 1. Reveal Letters one by one
+            tl.to(".letter", {
+                opacity: 1,
+                y: 0,
+                rotateX: 0,
+                duration: 1,
+                stagger: 0.1,
+                ease: "expo.out"
+            })
+            // 2. Subtle "Shuffle" or Glitch effect
+            .to(".loader-text", {
+                letterSpacing: "30px",
+                duration: 1.5,
+                ease: "power3.inOut"
+            }, "-=0.5")
+            .to(".loader-content", {
+                opacity: 0,
+                scale: 0.9,
+                duration: 0.8,
+                ease: "power4.in"
+            })
+            // 3. THE SHUTTER EXIT (Very Profound)
+            .to(".shutter.top", {
+                yPercent: -100,
+                duration: 1.2,
+                ease: "expo.inOut"
+            }, "-=0.2")
+            .to(".shutter.bottom", {
+                yPercent: 100,
+                duration: 1.2,
+                ease: "expo.inOut"
+            }, "<") // Starts at same time as top shutter
+            // 4. Reveal Hero Content
+            .from(".reveal-line", {
+                yPercent: 100,
+                duration: 1,
+                stagger: 0.2,
+                ease: "expo.out"
+            }, "-=0.8");
+        });
+        // 1. SCROLLER INIT
+        const scroller = new LocomotiveScroll({
+            el: document.querySelector('[data-scroll-container]'),
+            smooth: true,
+            lerp: 0.08
+        });
+
+        // Listen to Locomotive Scroll
+        scroller.on('scroll', (instance) => {
+            const nav = document.querySelector('.nav-bar');
+
+            // If scroll position is greater than 50px
+            if (instance.scroll.y > 50) {
+                nav.classList.add('nav-scrolled');
+            } else {
+                nav.classList.remove('nav-scrolled');
+            }
+        });
+
+        gsap.registerPlugin(ScrollTrigger);
+        scroller.on("scroll", ScrollTrigger.update);
+        ScrollTrigger.scrollerProxy("[data-scroll-container]", {
+            scrollTop(value) { return arguments.length ? scroller.scrollTo(value, 0, 0) : scroller.scroll.instance.scroll.y; },
+            getBoundingClientRect() { return {top: 0, left: 0, width: window.innerWidth, height: window.innerHeight}; },
+            pinType: document.querySelector("[data-scroll-container]").style.transform ? "transform" : "fixed"
+        });
+
+        // 2. PRELOADER & HERO ENTRANCE
+        window.addEventListener("load", () => {
+            const tl = gsap.timeline({
+                onComplete: () => {
+                    document.querySelector(".preloader").style.display = "none";
+                    scroller.update();
+                    ScrollTrigger.refresh();
+                }
+            });
+            tl.to(".progress-bar", { width: "100%", duration: 1.2, ease: "power2.inOut" })
+              .to(".preloader", { yPercent: -100, duration: 1, ease: "expo.inOut" })
+              .from(".reveal", { y: 60, opacity: 0, duration: 1, stagger: 0.15, ease: "power4.out" }, "-=0.4");
+        });
+
+        // Add to your window.load listener
+        const designTl = gsap.timeline();
+
+        // 3. NAV PILL ANIMATION
+        const navPill = document.querySelector('.nav-hover-pill');
+        const navItems = document.querySelectorAll('.nav-links li');
+
+        navItems.forEach(item => {
+            item.addEventListener('mouseenter', (e) => {
+                const { offsetLeft, offsetWidth } = e.target;
+                gsap.to(navPill, { left: offsetLeft, width: offsetWidth, opacity: 1, duration: 0.35, ease: "power2.out" });
+            });
+        });
+        document.querySelector('.nav-links-wrapper').addEventListener('mouseleave', () => {
+            gsap.to(navPill, { opacity: 0, duration: 0.3 });
+        });
+
+        // 4. HAMBURGER & MOBILE MENU
+        const menuBtn = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-nav a');
+
+        menuBtn.addEventListener('click', () => {
+            const isOpen = menuBtn.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+            isOpen ? scroller.stop() : scroller.start();
+        });
+
+        // 5. GLIDING SCROLL FOR ALL LINKS
+        const allLinks = document.querySelectorAll('a[href^="#"], .btn-glow');
+        allLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href') || '#contact';
+                const target = document.querySelector(targetId);
+
+                if(target) {
+                    // Close mobile menu if open
+                    menuBtn.classList.remove('active');
+                    mobileMenu.classList.remove('active');
+                    scroller.start();
+
+                    // Glide to section
+                    scroller.scrollTo(target, { duration: 1500 });
+                }
+            });
+        });
+
+        // 6. MAGNETIC FOOTER (AS REQUESTED)
+        const magnets = document.querySelectorAll('.magnetic');
+        magnets.forEach(m => {
+            m.addEventListener('mousemove', (e) => {
+                const b = m.getBoundingClientRect();
+                gsap.to(m, { x: e.clientX - b.left - b.width/2, y: e.clientY - b.top - b.height/2, duration: 0.3 });
+            });
+            m.addEventListener('mouseleave', () => gsap.to(m, { x: 0, y: 0, duration: 0.5, ease: "elastic.out" }));
+        });
+
+        ScrollTrigger.addEventListener("refresh", () => scroller.update());
+        ScrollTrigger.refresh();
+
+        // --- Magnetic Button Effect ---
+        const magneticBtns = document.querySelectorAll('.magnetic-btn');
+
+        magneticBtns.forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const bound = btn.getBoundingClientRect();
+                const x = e.clientX - bound.left - bound.width / 2;
+                const y = e.clientY - bound.top - bound.height / 2;
+
+                // Move the whole button towards the mouse
+                gsap.to(btn, {
+                    x: x * 0.3,
+                    y: y * 0.3,
+                    duration: 0.4,
+                    ease: "power2.out"
+                });
+
+                // Move the text inside slightly faster for depth
+                const text = btn.querySelector('.btn-text');
+                gsap.to(text, {
+                    x: x * 0.15,
+                    y: y * 0.15,
+                    duration: 0.4,
+                    ease: "power2.out"
+                });
+            });
+
+            btn.addEventListener('mouseleave', () => {
+                gsap.to([btn, btn.querySelector('.btn-text')], {
+                    x: 0,
+                    y: 0,
+                    duration: 1,
+                    ease: "elastic.out(1, 0.3)"
+                });
+            });
+        });
+
+        // --- CTA 3D TILT EFFECT ---
+        const ctaCard = document.querySelector('.cta-glass-card');
+
+        if (ctaCard) {
+            ctaCard.addEventListener('mousemove', (e) => {
+                const { left, top, width, height } = ctaCard.getBoundingClientRect();
+                const x = (e.clientX - left) / width - 0.5;
+                const y = (e.clientY - top) / height - 0.5;
+
+                gsap.to(ctaCard, {
+                    rotationY: x * 10, // Tilt left/right
+                    rotationX: -y * 10, // Tilt up/down
+                    transformPerspective: 1000,
+                    ease: "power2.out",
+                    duration: 0.6
+                });
+            });
+
+            ctaCard.addEventListener('mouseleave', () => {
+                gsap.to(ctaCard, {
+                    rotationY: 0,
+                    rotationX: 0,
+                    duration: 1,
+                    ease: "elastic.out(1, 0.3)"
+                });
+            });
+        }
+        // --- UNIVERSAL SCROLL REVEAL ---
+        function initScrollReveals() {
+            const revealElements = document.querySelectorAll('.reveal-on-scroll');
+
+            revealElements.forEach((el) => {
+                gsap.to(el, {
+                    scrollTrigger: {
+                        trigger: el,
+                        scroller: "[data-scroll-container]", // Crucial for Locomotive
+                        start: "top 85%", // Animation starts when element is 85% from top
+                        toggleActions: "play none none none", // Plays once
+                    },
+                    opacity: 1,
+                    y: 0,
+                    duration: 1.2,
+                    ease: "power3.out",
+                    stagger: 0.2 // If multiple elements trigger at once, they'll stagger
+                });
+            });
+        }
+
+        // Call this function after your window "load" event and after ScrollTrigger.refresh()
+        window.addEventListener("load", () => {
+            // ... your other loading code ...
+            initScrollReveals();
+        });
+
+        // Ensure this runs after GSAP and Locomotive are initialized
+        window.addEventListener("load", () => {
+            const heroTimeline = gsap.timeline();
+
+            // 1. Reveal Lines
+            heroTimeline.from(".reveal-line", {
+                yPercent: 110,
+                duration: 1.2,
+                stagger: 0.15,
+                ease: "expo.out",
+                delay: 0.5 // Adjust based on preloader exit
+            })
+            // 2. Reveal Sub-elements
+            .from(".studio-tag, .hero-description, .hero-actions", {
+                opacity: 0,
+                y: 20,
+                duration: 1,
+                stagger: 0.1,
+                ease: "power3.out"
+            }, "-=0.8");
+
+            // --- MAGNETIC BUTTON LOGIC ---
+            const magneticBtns = document.querySelectorAll('.magnetic-btn');
+
+            magneticBtns.forEach(btn => {
+                btn.addEventListener('mousemove', (e) => {
+                    const rect = btn.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+
+                    gsap.to(btn, {
+                        x: x * 0.3,
+                        y: y * 0.3,
+                        duration: 0.4,
+                        ease: "power2.out"
+                    });
+                });
+
+                btn.addEventListener('mouseleave', () => {
+                    gsap.to(btn, {
+                        x: 0,
+                        y: 0,
+                        duration: 1,
+                        ease: "elastic.out(1, 0.3)"
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
